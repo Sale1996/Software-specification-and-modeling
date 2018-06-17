@@ -1,0 +1,166 @@
+/***********************************************************************
+ * Module:  StranicaView.java
+ * Author:  sale
+ * Purpose: Defines the Class StranicaView
+ ***********************************************************************/
+
+package etapa2.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
+
+import etapa1.model.events.AbstractEvent;
+import etapa1.view.GlavniProzor;
+import etapa2.model.events.EventEditIndexStranica;
+import etapa2.model.events.EventVelicinaStranica;
+import etapa3.model.Slot;
+import etapa3.model.events.EventAddSlot;
+import etapa3.model.events.EventRemoveSlot;
+import etapa3.view.SlotView;
+
+/** @pdOid 496139e4-492c-44ee-9d11-0cac940edf69 */
+public class StranicaView extends JPanel implements Observer {
+	JPanel stranicaPanel;
+	JLabel indexStranice;
+	JLabel duzinaStranice;
+	JLabel sirinaStranice;
+	JLabel brojSlotova;
+	int index;
+	String raspodela;
+	String ime;
+	ArrayList<SlotView> slotovi;
+	BoxLayout boxCenter;
+	public StranicaView(String ime1, int indexS, int duzinaS, int sirinaS, int brojSlotovaS,
+			String rapodelaSlotova) {
+		slotovi = new ArrayList<SlotView>();
+		ime=ime1;
+		// TODO Auto-generated constructor stub
+		index=indexS;
+		raspodela=rapodelaSlotova;
+		this.setPreferredSize(new Dimension(400, 400));
+		indexStranice=new JLabel("Index:" + indexS);
+		indexStranice.setFont(new Font("Serif", Font.PLAIN, 5));
+		stranicaPanel= new JPanel(); 
+		BoxLayout boxCenter=new BoxLayout(stranicaPanel, BoxLayout.Y_AXIS);
+		stranicaPanel.setLayout(boxCenter);
+		stranicaPanel.setBackground(Color.WHITE);
+		this.setLayout(new BorderLayout());
+		this.add(stranicaPanel, BorderLayout.CENTER);
+		setBorder(new LineBorder(Color.BLACK));
+		if(raspodela.equals("Horizontalno")) {
+			boxCenter=new BoxLayout(stranicaPanel, BoxLayout.X_AXIS);
+			stranicaPanel.setLayout(boxCenter);
+		}else {
+			boxCenter=new BoxLayout(stranicaPanel, BoxLayout.Y_AXIS);
+			stranicaPanel.setLayout(boxCenter);
+
+		}
+		revalidate();
+		
+	}
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		AbstractEvent event = (AbstractEvent) arg1;
+		if(event instanceof EventAddSlot){
+			EventAddSlot event1 = (EventAddSlot) event;
+			Slot slot = event1.getSlot();
+			SlotView slotView = new SlotView(slot);
+			
+			slot.addObserver(slotView);
+			GlavniProzor.getInstance().getSlotView().add(slotView);
+			slotovi.add(slotView);
+		    stranicaPanel.add(slotView);
+		    stranicaPanel.repaint();
+			revalidate();
+			
+		}else if(event instanceof EventRemoveSlot) {
+			EventRemoveSlot event2 = (EventRemoveSlot) event;
+			Slot slot = event2.getSlot();
+			for(SlotView item : GlavniProzor.getInstance().getSlotView())
+				if(item.getSlot() == slot) {
+					GlavniProzor.getInstance().getSlotView().remove(item);
+					stranicaPanel.remove(item);
+					stranicaPanel.validate();
+					stranicaPanel.repaint();
+					break;
+				}
+			revalidate();
+			
+		}else if(event instanceof EventVelicinaStranica){
+			EventVelicinaStranica event1 = (EventVelicinaStranica) event;
+			this.setPreferredSize(new Dimension(event1.getSirina(),event1.getDuzina()));
+			this.setMinimumSize(this.getPreferredSize());
+			this.setMaximumSize(this.getPreferredSize());
+			revalidate();
+		}else if(event instanceof EventEditIndexStranica){
+			EventEditIndexStranica event1= (EventEditIndexStranica) event;
+			this.index = event1.getIndex();
+		}
+		
+	}
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	public String getIme() {
+		return ime;
+	}
+	public void setIme(String ime) {
+		this.ime = ime;
+	}
+	public ArrayList<SlotView> getSlotovi() {
+		return slotovi;
+	}
+	public void setSlotovi(ArrayList<SlotView> slotovi) {
+		this.slotovi = slotovi;
+	}
+	public JPanel getStranicaPanel() {
+		return stranicaPanel;
+	}
+	public void setStranicaPanel(JPanel stranicaPanel) {
+		this.stranicaPanel = stranicaPanel;
+	}
+	public JLabel getIndexStranice() {
+		return indexStranice;
+	}
+	public void setIndexStranice(JLabel indexStranice) {
+		this.indexStranice = indexStranice;
+	}
+	public JLabel getDuzinaStranice() {
+		return duzinaStranice;
+	}
+	public void setDuzinaStranice(JLabel duzinaStranice) {
+		this.duzinaStranice = duzinaStranice;
+	}
+	public JLabel getSirinaStranice() {
+		return sirinaStranice;
+	}
+	public void setSirinaStranice(JLabel sirinaStranice) {
+		this.sirinaStranice = sirinaStranice;
+	}
+	public JLabel getBrojSlotova() {
+		return brojSlotova;
+	}
+	public void setBrojSlotova(JLabel brojSlotova) {
+		this.brojSlotova = brojSlotova;
+	}
+	public String getRaspodela() {
+		return raspodela;
+	}
+	public void setRaspodela(String raspodela) {
+		this.raspodela = raspodela;
+	}
+}

@@ -1,0 +1,50 @@
+/***********************************************************************
+ * Module:  ElementView.java
+ * Author:  sale
+ * Purpose: Defines the Class ElementView
+ ***********************************************************************/
+
+package etapa3.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+import etapa3.model.AbstractElement;
+import etapa3.model.Slot;
+
+/** @pdOid 17157736-41ca-49e8-8163-5ec51dbd521e */
+public class ElementView extends JPanel implements Observer {
+	JTextArea textArea;
+	JPanel panelElement;
+	AbstractElement element;
+	public ElementView(AbstractElement element1) {
+		element=element1;
+		textArea=new JTextArea();
+		textArea.setBackground(Color.YELLOW);
+		textArea.setLineWrap(true);
+		panelElement=new JPanel(new BorderLayout());
+		panelElement.add(textArea, BorderLayout.CENTER);
+		this.setLayout(new BorderLayout());
+		this.add(panelElement, BorderLayout.CENTER);
+		revalidate();
+	}
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+	public AbstractElement getElement() {
+		return element;
+	}
+	public void setElement(AbstractElement element) {
+		this.element = element;
+	}
+}

@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  RemoveElementCommand.java
+ * Author:  sale
+ * Purpose: Defines the Class RemoveElementCommand
+ ***********************************************************************/
+
+package etapa3.controller;
+
+import java.util.*;
+
+/** @pdOid 11af28c3-11b0-485f-a37b-fe401a761f1d */
+public class RemoveElementCommand extends etapa2.controller.Command {
+}

@@ -1,0 +1,83 @@
+package etapa1.controller;
+
+import java.awt.event.ActionEvent;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.zip.InflaterInputStream;
+
+import javax.swing.AbstractAction;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import etapa1.model.Projekat;
+import etapa1.model.RadniProstor;
+import etapa1.ostalo.Singleton;
+import etapa1.view.GlavniProzor;
+
+public class OpenProjekatAction extends AbstractAction {
+	public OpenProjekatAction () {
+		putValue(NAME, "Open Projekat");
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String[] izbori;
+		ArrayList<String> izbori1=new ArrayList<String>();
+		String izbor;
+		if(Singleton.getInstance().radniProstori.size()>0) {
+			JFileChooser choose = new JFileChooser();
+			choose.setFileSelectionMode(JFileChooser.OPEN_DIALOG);
+			choose.showOpenDialog(null);
+			File open = choose.getSelectedFile().getAbsoluteFile();
+			try {
+				ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new InflaterInputStream(new FileInputStream(open))));
+				try {
+					Projekat p = (Projekat)in.readObject();
+					
+					int postojiIme = 0;
+					for(RadniProstor rp : Singleton.getInstance().getRadniProstori()) {
+						izbori1.add(rp.getNaziv());
+						for(Projekat proj : rp.getProjekti()) {
+							if(proj.getNaziv().equals(p.getNaziv())) {
+								postojiIme=1;
+								break;
+							}
+						}
+					}
+					if(postojiIme == 0) {
+						izbori= new String[izbori1.size()];
+						izbori1.toArray(izbori);
+						izbor = (String) JOptionPane.showInputDialog(null, "Izaberi radni prostor gde otvoriti:",
+						        "Otvaranje", JOptionPane.QUESTION_MESSAGE, null,izbori,izbori[0]); // Initial choice
+						p.setMaticniRP(null);
+						for(RadniProstor item : Singleton.getInstance().getRadniProstori()){
+							if(item.getNaziv().equals(izbor)) 
+								item.addProjekti(p);
+						}
+					}else {
+						JOptionPane.showMessageDialog(null, "Projekat sa imenom "+p.getNaziv()+" vec postoji u radnom prostoru", null, JOptionPane.WARNING_MESSAGE );
+					}
+				}finally {
+					in.close();
+				}
+			}catch (ClassNotFoundException e1) {
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Klasa nije pronađena.", null, JOptionPane.ERROR_MESSAGE);
+			}catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Fajl za otvaranje projekta nije pronađen.", null, JOptionPane.ERROR_MESSAGE);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Greška pri otvaranju projekta.", null, JOptionPane.ERROR_MESSAGE);
+			}		
+		}else {
+			JOptionPane.showMessageDialog(null, "Ne možete dodati projekat ako nema radnih prostora.", null, JOptionPane.WARNING_MESSAGE);
+		}
+	}
+}

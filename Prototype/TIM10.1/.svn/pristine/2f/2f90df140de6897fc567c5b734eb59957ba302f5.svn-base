@@ -1,0 +1,22 @@
+/***********************************************************************
+ * Module:  EditBrojStranicaAction.java
+ * Author:  ra35-2015
+ * Purpose: Defines the Class EditBrojStranicaAction
+ ***********************************************************************/
+
+package etapa2.controller;
+
+import java.awt.event.ActionEvent;
+import java.util.*;
+
+import javax.swing.AbstractAction;
+
+/** @pdOid 1564e6ca-083f-4e21-9b0d-8227d532eaec */
+public class EditBrojStranicaAction extends AbstractAction {
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+}

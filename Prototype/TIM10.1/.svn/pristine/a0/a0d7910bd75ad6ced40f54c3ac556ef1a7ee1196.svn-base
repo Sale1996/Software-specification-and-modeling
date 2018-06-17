@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  AddElementCommand.java
+ * Author:  sale
+ * Purpose: Defines the Class AddElementCommand
+ ***********************************************************************/
+
+package etapa3.controller;
+
+import java.util.*;
+
+/** @pdOid f9d773d5-72a8-44ee-a69a-375c26d1246d */
+public class AddElementCommand extends etapa2.controller.Command {
+}

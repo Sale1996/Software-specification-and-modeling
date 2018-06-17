@@ -1,0 +1,88 @@
+/***********************************************************************
+ * Module:  SlotView.java
+ * Author:  sale
+ * Purpose: Defines the Class SlotView
+ ***********************************************************************/
+
+package etapa3.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import etapa1.model.events.AbstractEvent;
+import etapa1.view.GlavniProzor;
+import etapa2.model.Stranica;
+import etapa2.model.events.EventAddStranica;
+import etapa2.view.StranicaView;
+import etapa3.model.AbstractElement;
+import etapa3.model.Slot;
+import etapa3.model.TekstualniElement;
+import etapa3.model.events.EventAddElement;
+import etapa3.model.events.EventAddSlot;
+import etapa3.model.events.EventRemoveElement;
+import etapa3.model.events.EventRemoveSlot;
+
+/** @pdOid 4be004e7-80da-4f25-97e4-af2fda5cd1ee */
+public class SlotView extends JPanel implements Observer {
+	JPanel slotPane;
+	//JLabel slotTekst;
+	Slot slot;
+	public SlotView(Slot slot1) {
+		slot=slot1;
+		slotPane=new JPanel();
+		this.setPreferredSize(new Dimension(50, 50));
+		slotPane.setBackground(Color.PINK);
+		slotPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.setLayout(new BorderLayout());
+		this.add(slotPane, BorderLayout.CENTER);
+		revalidate();
+	}
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		AbstractEvent event = (AbstractEvent) arg1;
+		if(event instanceof EventAddElement){
+			EventAddElement event1 = (EventAddElement) event;
+			AbstractElement element = event1.getElement();
+			ElementView elementView = new ElementView(element);
+			element.addObserver(elementView);
+			GlavniProzor.getInstance().getElementView().add(elementView);
+			slotPane.setLayout(new BorderLayout());
+			slotPane.add(elementView, BorderLayout.CENTER);
+			slotPane.repaint();
+			revalidate();
+			
+		}else if(event instanceof EventRemoveElement) {
+			EventRemoveElement event2 = (EventRemoveElement) event;
+			AbstractElement element = event2.getElement();
+			for(ElementView item : GlavniProzor.getInstance().getElementView())
+				if(item.getElement() == element) {
+					GlavniProzor.getInstance().getSlotView().remove(item);
+					slotPane.remove(item);
+					slotPane.repaint();
+					slotPane.validate();
+					break;
+				}
+			revalidate();
+			
+		}
+		
+	}
+	public Slot getSlot() {
+		return slot;
+	}
+	public void setSlot(Slot slot) {
+		this.slot = slot;
+	}
+}

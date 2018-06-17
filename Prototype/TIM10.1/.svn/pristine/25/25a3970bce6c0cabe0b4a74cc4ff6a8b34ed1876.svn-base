@@ -1,0 +1,16 @@
+/***********************************************************************
+ * Module:  EditVelicinaStranicaCommand.java
+ * Author:  ra35-2015
+ * Purpose: Defines the Class EditVelicinaStranicaCommand
+ ***********************************************************************/
+
+package etapa2.controller;
+
+import etapa2.model.Stranica;
+
+/** @pdOid 408fc11b-2247-44b1-bb27-49a2f6e1cd7c */
+public class EditVelicinaStranicaCommand {
+   /** @pdOid 1928f249-f706-4245-83ab-17e0bc23e6be */
+   private Stranica stranica;
+
+}

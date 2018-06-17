@@ -1,0 +1,18 @@
+/***********************************************************************
+ * Module:  EditBrojStranicaCommand.java
+ * Author:  ra35-2015
+ * Purpose: Defines the Class EditBrojStranicaCommand
+ ***********************************************************************/
+
+package etapa2.controller;
+
+import java.util.*;
+
+import etapa1.model.Dokument;
+
+/** @pdOid 807d73f0-74b4-475b-9d1f-9c6bf2768930 */
+public class EditBrojStranicaCommand extends Command {
+   /** @pdOid 61b5fc43-f9af-42f5-a26d-619809993731 */
+   private Dokument dokument;
+
+}

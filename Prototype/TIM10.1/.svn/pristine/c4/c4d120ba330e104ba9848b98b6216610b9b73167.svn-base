@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  TekstualniElement.java
+ * Author:  sale
+ * Purpose: Defines the Class TekstualniElement
+ ***********************************************************************/
+
+package etapa3.model;
+
+import java.util.*;
+
+/** @pdOid 3ae6a3bb-7154-451d-bf88-6e20043335b2 */
+public class TekstualniElement extends AbstractElement {
+}

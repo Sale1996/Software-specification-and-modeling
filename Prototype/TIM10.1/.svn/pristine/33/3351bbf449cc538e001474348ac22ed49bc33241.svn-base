@@ -1,0 +1,302 @@
+/***********************************************************************
+ * Module:  GlavniProzor.java
+ * Author:  ra35-2015
+ * Purpose: Defines the Class GlavniProzor
+ ***********************************************************************/
+
+package etapa1.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.util.ArrayList;
+
+import javax.swing.JFrame;
+import javax.swing.JSplitPane;
+import javax.swing.WindowConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import etapa1.model.Dokument;
+import etapa1.model.Projekat;
+import etapa1.model.RadniProstor;
+import etapa2.model.Stranica;
+import etapa2.view.StranicaView;
+import etapa3.model.Slot;
+import etapa3.view.ElementView;
+import etapa3.view.SlotView;
+
+/** @pdOid d00bfa19-48d0-4ee2-b3ce-e86cf52e754b */
+public class GlavniProzor extends JFrame {
+   /** @pdOid 88911b66-984e-4549-96e5-e08caffbf222 */
+   private static GlavniProzor instance;
+   private Stablo panelDrvo;
+   private DesniPanel desniPanel;
+   private JSplitPane splitPanel;
+   private GlavniMeni menu;
+   private RadniProstorView rpView;
+   private ArrayList<ProjekatView> projektiView;
+   private ArrayList<DokumentView> dokumentiView;
+   private ArrayList<StranicaView> straniceView;
+   private ArrayList<SlotView> slotView;
+   private ArrayList<ElementView> elementView;
+   
+   /** @pdOid 9f7abfdb-19be-46f4-b877-c964b4de7567 */
+   public static GlavniProzor getInstance() {
+      // TODO: implement
+	   if (instance == null){
+			instance = new GlavniProzor();
+			instance.initGui();
+		}
+      return instance;
+   }
+   
+   public void initGui(){
+	   setTitle("Gerudok");
+	   setSize(1050,750);
+	   setLocationRelativeTo(null);
+	   setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	   setVisible(false);
+	   
+	   menu= new GlavniMeni();
+	   this.setJMenuBar(menu);
+	   
+
+	   
+	   panelDrvo = new Stablo();
+	   
+	   desniPanel = new DesniPanel();
+	   //desniPanel.setLayout(new BorderLayout());
+	   
+	   splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,panelDrvo,desniPanel);
+	   splitPanel.setOneTouchExpandable(true);
+	   splitPanel.setDividerLocation(300);
+	   add(splitPanel);
+	   
+	   
+	   //iniciranje prozora komponenti
+	   projektiView = new ArrayList<ProjekatView>();
+	   dokumentiView = new ArrayList<DokumentView>();
+	   straniceView = new ArrayList<StranicaView>();
+	   slotView = new ArrayList<SlotView>();	
+	   elementView=new ArrayList<ElementView>();
+   }
+
+   
+public Stablo getPanelDrvo() {
+	return panelDrvo;
+}
+
+public void setPanelDrvo(Stablo panelDrvo) {
+	this.panelDrvo = panelDrvo;
+}
+   
+  
+public DesniPanel getDesniPanel() {
+	return desniPanel;
+}
+
+public void setDesniPanel(DesniPanel desniPanel) {
+	this.desniPanel = desniPanel;
+}
+
+public RadniProstorView getRpView() {
+	return rpView;
+}
+
+public void setRpView(RadniProstorView rpView) {
+	this.rpView = rpView;
+}
+
+public ArrayList<ProjekatView> getProjektiView() {
+	return projektiView;
+}
+
+public void setProjektiView(ArrayList<ProjekatView> projektiView) {
+	this.projektiView = projektiView;
+}
+
+public ArrayList<DokumentView> getDokumentiView() {
+	return dokumentiView;
+}
+
+public void setDokumentiView(ArrayList<DokumentView> dokumentiView) {
+	this.dokumentiView = dokumentiView;
+}
+
+public ArrayList<StranicaView> getStraniceView() {
+	return straniceView;
+}
+
+public void setStraniceView(ArrayList<StranicaView> straniceView) {
+	this.straniceView = straniceView;
+}
+
+public ArrayList<SlotView> getSlotView() {
+	return slotView;
+}
+
+public ArrayList<ElementView> getElementView() {
+	return elementView;
+}
+
+public void setElementView(ArrayList<ElementView> elementView) {
+	this.elementView = elementView;
+}
+
+}
+
+
+class SelectionListener implements TreeSelectionListener {
+
+	@Override
+	public void valueChanged(TreeSelectionEvent arg0) {
+		// TODO Auto-generated method stub
+		DefaultMutableTreeNode sel = (DefaultMutableTreeNode) GlavniProzor.getInstance().getPanelDrvo().getTree().getLastSelectedPathComponent();
+		if(sel==null)
+			return;
+		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) sel.getParent();
+		
+		Object o = null;
+		if (sel != null) {
+			o = sel.getUserObject();
+		}
+		
+		Object parent1= null;
+		if(parent!=null){
+			parent1=parent.getUserObject();
+		}
+	
+		
+		if (sel != null){
+			if(o instanceof RadniProstor ) {				
+				GlavniProzor.getInstance().getDesniPanel().removeAll();
+				GlavniProzor.getInstance().getDesniPanel().setLayout(new BorderLayout());
+				GlavniProzor.getInstance().getDesniPanel().setBackground(Color.GREEN);
+				//ovde prvo brisem sve sa panela pa onda uzimam stavljam RadniProstorView koji se nalazi u klasi GlavniProzor
+				//i postavljam ga u taj panel i osvezavam ga
+				GlavniProzor.getInstance().getDesniPanel().add(GlavniProzor.getInstance().getRpView(), BorderLayout.CENTER);
+				
+				GlavniProzor.getInstance().getDesniPanel().validate();
+
+			}else if(o instanceof Projekat) {
+				Projekat projekat = (Projekat) o;
+				GlavniProzor.getInstance().getDesniPanel().removeAll();
+				GlavniProzor.getInstance().getDesniPanel().setLayout(new BorderLayout());
+				GlavniProzor.getInstance().getDesniPanel().setBackground(Color.PINK);
+
+
+
+				
+				
+				for(ProjekatView item : GlavniProzor.getInstance().getProjektiView()){
+					if(projekat.getNaziv().equals(item.getImePanela())){
+						GlavniProzor.getInstance().getDesniPanel().add(item, BorderLayout.CENTER);					
+						GlavniProzor.getInstance().getDesniPanel().repaint();
+						break;
+					}
+				}
+				GlavniProzor.getInstance().getDesniPanel().validate();
+
+			}else if(o instanceof Dokument){
+				Dokument dokument = (Dokument) o;
+				Projekat projekat = (Projekat) parent1;
+				//sada ovo isto radi ko za projekat i na kraju samo selektujemo tab dokumenta!
+				GlavniProzor.getInstance().getDesniPanel().removeAll();
+				GlavniProzor.getInstance().getDesniPanel().setLayout(new BorderLayout());
+				GlavniProzor.getInstance().getDesniPanel().setBackground(Color.PINK);
+
+				GlavniProzor.getInstance().getDesniPanel().validate();
+
+				//
+				for(ProjekatView item : GlavniProzor.getInstance().getProjektiView()){
+					if(dokument.getMaticniProjekat().getNaziv() == item.getImePanela()){
+						GlavniProzor.getInstance().getDesniPanel().add(item, BorderLayout.CENTER);
+						//sada ovde cemo da nadjemo koji dokument da selektujemo
+						for(int i=0; i< item.panelTab.getTabCount();i++){
+							if(dokument.getNaziv()==item.panelTab.getTitleAt(i)){
+								item.panelTab.setSelectedIndex(i);
+								item.panelTab.validate();
+								item.validate();
+							}
+						}
+						
+						GlavniProzor.getInstance().getDesniPanel().validate();
+						GlavniProzor.getInstance().getDesniPanel().repaint();
+
+
+						break;
+					}
+				}
+				
+				
+				
+				
+			}else if(o instanceof Stranica){
+				
+				Stranica stranica = (Stranica) o;
+				//sada ovo isto radi ko za projekat i na kraju samo selektujemo tab dokumenta!
+				GlavniProzor.getInstance().getDesniPanel().removeAll();
+				GlavniProzor.getInstance().getDesniPanel().setLayout(new BorderLayout());
+				GlavniProzor.getInstance().getDesniPanel().setBackground(Color.CYAN);
+
+				GlavniProzor.getInstance().getDesniPanel().validate();
+
+				//
+				for(ProjekatView item : GlavniProzor.getInstance().getProjektiView()){
+					if(stranica.getMaticniDokument().getMaticniProjekat().getNaziv() == item.getImePanela()){
+						GlavniProzor.getInstance().getDesniPanel().add(item, BorderLayout.CENTER);
+						//sada ovde cemo da nadjemo koji dokument da selektujemo
+						for(int i=0; i< item.panelTab.getTabCount();i++){
+							if(stranica.getMaticniDokument().getNaziv()==item.panelTab.getTitleAt(i)){
+								item.panelTab.setSelectedIndex(i);
+								item.panelTab.validate();
+								item.validate();
+							}
+						}
+						
+						GlavniProzor.getInstance().getDesniPanel().validate();
+						GlavniProzor.getInstance().getDesniPanel().repaint();
+
+
+						break;
+					}
+				}
+				
+				
+			}else if(o instanceof Slot){
+
+				Slot slot = (Slot) o;
+				//sada ovo isto radi ko za projekat i na kraju samo selektujemo tab dokumenta!
+				GlavniProzor.getInstance().getDesniPanel().removeAll();
+				GlavniProzor.getInstance().getDesniPanel().setLayout(new BorderLayout());
+				GlavniProzor.getInstance().getDesniPanel().setBackground(Color.CYAN);
+
+				GlavniProzor.getInstance().getDesniPanel().validate();
+
+				//
+				for(ProjekatView item : GlavniProzor.getInstance().getProjektiView()){
+					if(slot.getMaticnaStranica().getMaticniDokument().getMaticniProjekat().getNaziv() == item.getImePanela()){
+						GlavniProzor.getInstance().getDesniPanel().add(item, BorderLayout.CENTER);
+						//sada ovde cemo da nadjemo koji dokument da selektujemo
+						for(int i=0; i< item.panelTab.getTabCount();i++){
+							if(slot.getMaticnaStranica().getMaticniDokument().getNaziv()==item.panelTab.getTitleAt(i)){
+								item.panelTab.setSelectedIndex(i);
+								item.panelTab.validate();
+								item.validate();
+							}
+						}
+						
+						GlavniProzor.getInstance().getDesniPanel().validate();
+						GlavniProzor.getInstance().getDesniPanel().repaint();
+
+
+						break;
+					}
+				}
+				
+			}
+		}
+	}
+}
+

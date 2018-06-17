@@ -1,0 +1,119 @@
+/***********************************************************************
+ * Module:  StranicaView.java
+ * Author:  sale
+ * Purpose: Defines the Class StranicaView
+ ***********************************************************************/
+
+package etapa2.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
+
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import etapa1.model.events.AbstractEvent;
+import etapa1.view.GlavniProzor;
+import etapa2.model.Stranica;
+import etapa3.model.Slot;
+import etapa3.model.events.EventAddSlot;
+import etapa3.model.events.EventRemoveSlot;
+import etapa3.view.SlotView;
+
+/** @pdOid 496139e4-492c-44ee-9d11-0cac940edf69 */
+public class StranicaView extends JPanel implements Observer {
+	JPanel stranicaPanel;
+	JLabel indexStranice;
+	JLabel duzinaStranice;
+	JLabel sirinaStranice;
+	JLabel brojSlotova;
+	int index;
+	String raspodela;
+	String ime;
+	public StranicaView(String ime1, int indexS, int duzinaS, int sirinaS, int brojSlotovaS,
+			String rapodelaSlotova) {
+		ime=ime1;
+		// TODO Auto-generated constructor stub
+		index=indexS;
+		raspodela=rapodelaSlotova;
+		this.setPreferredSize(new Dimension(400, 400));
+		indexStranice=new JLabel("Index:" + indexS);
+		indexStranice.setFont(new Font("Serif", Font.PLAIN, 5));
+		/*duzinaStranice=new JLabel("Duzina:" + duzinaS);
+		duzinaStranice.setFont(new Font("Serif", Font.PLAIN, 5));
+		sirinaStranice=new JLabel("Sirina:" + sirinaS);
+		sirinaStranice.setFont(new Font("Serif", Font.PLAIN, 5));
+		brojSlotova=new JLabel("Broj slotova:" + brojSlotovaS);
+		brojSlotova.setFont(new Font("Serif", Font.PLAIN, 5));*/
+		stranicaPanel= new JPanel(); 
+		BoxLayout boxCenter=new BoxLayout(stranicaPanel, BoxLayout.Y_AXIS);
+		stranicaPanel.setLayout(boxCenter);
+		stranicaPanel.setBackground(Color.WHITE);
+		//stranicaPanel.add(indexStranice);
+		//stranicaPanel.add(duzinaStranice);
+		//stranicaPanel.add(sirinaStranice);
+		//stranicaPanel.add(brojSlotova);
+		this.setLayout(new BorderLayout());
+		this.add(stranicaPanel, BorderLayout.CENTER);
+		revalidate();
+		
+	}
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		AbstractEvent event = (AbstractEvent) arg1;
+		if(event instanceof EventAddSlot){
+			EventAddSlot event1 = (EventAddSlot) event;
+			Slot slot = event1.getSlot();
+			SlotView slotView = new SlotView(slot);
+			if(raspodela.equals("Horizontalno")) {
+				BoxLayout boxCenter=new BoxLayout(stranicaPanel, BoxLayout.X_AXIS);
+				stranicaPanel.setLayout(boxCenter);
+			}else {
+				BoxLayout boxCenter=new BoxLayout(stranicaPanel, BoxLayout.Y_AXIS);
+				stranicaPanel.setLayout(boxCenter);
+
+			}
+			slot.addObserver(slotView);
+			GlavniProzor.getInstance().getSlotView().add(slotView);
+		    stranicaPanel.add(slotView);
+		    stranicaPanel.repaint();
+			revalidate();
+			
+		}else if(event instanceof EventRemoveSlot) {
+			EventRemoveSlot event2 = (EventRemoveSlot) event;
+			Slot slot = event2.getSlot();
+			for(SlotView item : GlavniProzor.getInstance().getSlotView())
+				if(item.getSlot() == slot) {
+					GlavniProzor.getInstance().getSlotView().remove(item);
+					stranicaPanel.remove(item);
+					stranicaPanel.validate();
+					stranicaPanel.repaint();
+					break;
+				}
+			revalidate();
+			
+		}
+		
+	}
+	public int getIndex() {
+		return index;
+	}
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	public String getIme() {
+		return ime;
+	}
+	public void setIme(String ime) {
+		this.ime = ime;
+	}
+}

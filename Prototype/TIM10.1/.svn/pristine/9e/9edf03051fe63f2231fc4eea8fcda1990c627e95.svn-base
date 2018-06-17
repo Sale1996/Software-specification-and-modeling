@@ -1,0 +1,66 @@
+/***********************************************************************
+ * Module:  ProjekatView.java
+ * Author:  ra168-2015
+ * Purpose: Defines the Class ProjekatView
+ ***********************************************************************/
+
+package etapa1.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+
+import etapa1.model.Dokument;
+import etapa1.model.events.AbstractEvent;
+import etapa1.model.events.EventAddDokument;
+import etapa1.model.events.EventEditImeProjekat;
+
+/** @pdOid cb0ba238-abb9-4e3b-bb36-6d520c658bdf */
+public class ProjekatView extends JPanel implements Observer {
+
+	JTabbedPane panelTab;
+	String imePanela;
+
+	public ProjekatView(String imePanela) {
+		super();
+		this.setSize(new Dimension(900, 800));
+		//BoxLayout boxCenter=new BoxLayout(this, BoxLayout.Y_AXIS);
+		//this.setLayout(boxCenter);
+		this.imePanela = imePanela;
+		panelTab= new JTabbedPane();
+		//BoxLayout boxCenter1=new BoxLayout(panelTab, BoxLayout.Y_AXIS);
+		this.setLayout(new BorderLayout());
+		panelTab.setPreferredSize(new Dimension(500, 500));
+		this.add(panelTab);
+		revalidate();
+	}
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		AbstractEvent event = (AbstractEvent) arg1;
+		if(event instanceof EventAddDokument){
+			EventAddDokument event1 = (EventAddDokument) event;
+			Dokument dokument = event1.getDokument();
+			DokumentView dokumenView = new DokumentView(dokument.getNaziv());//ubacujemo ime iz razloga kako bi u glavnom prozoru mogli da razlikujemo panele!
+			dokument.addObserver(dokumenView);
+			GlavniProzor.getInstance().getDokumentiView().add(dokumenView);
+			panelTab.addTab(dokument.getNaziv(), dokumenView);
+			revalidate();
+		}
+		
+	}
+	public String getImePanela() {
+		return imePanela;
+	}
+	public void setImePanela(String imePanela) {
+		this.imePanela = imePanela;
+	}
+}

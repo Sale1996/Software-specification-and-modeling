@@ -1,0 +1,54 @@
+package etapa2.controller;
+
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import etapa1.model.Dokument;
+import etapa1.model.Projekat;
+import etapa1.model.RadniProstor;
+import etapa1.ostalo.Singleton;
+import etapa1.view.GlavniProzor;
+import etapa2.model.Stranica;
+
+public class EditIndexStranicaAction extends AbstractAction{
+	public EditIndexStranicaAction() {
+		putValue(NAME, "Index stranice");
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		DefaultMutableTreeNode sel = (DefaultMutableTreeNode)GlavniProzor.getInstance().getPanelDrvo().getTree().getLastSelectedPathComponent();
+		if(sel != null) {
+			Object o = sel.getUserObject();
+			if(o instanceof Stranica) {
+				Stranica s = (Stranica)o;
+				int index;
+				try {
+					index = Integer.parseInt(JOptionPane.showInputDialog("Unesi index:"));
+					s.setRedniBrojIndeksa(index);
+					for(RadniProstor rp : Singleton.getInstance().getRadniProstori()) {
+						for(Projekat proj : rp.getProjekti()) {
+							for(Dokument dok : proj.getDokumenti()) {
+								for(Stranica str : dok.getStranice()) {
+									if(str.getRedniBrojIndeksa() == index && s.getNaziv() != str.getNaziv()) {
+										str.setRedniBrojIndeksa(str.getRedniBrojIndeksa()+1);
+										break;
+									}
+								}
+							}
+						}
+					}
+					
+					
+				}catch(NumberFormatException e) {
+					JOptionPane.showMessageDialog(null, "Unos indexa stranice mora biti celobrojan.", null, JOptionPane.WARNING_MESSAGE );
+				}
+			}
+		}
+		
+	}
+}

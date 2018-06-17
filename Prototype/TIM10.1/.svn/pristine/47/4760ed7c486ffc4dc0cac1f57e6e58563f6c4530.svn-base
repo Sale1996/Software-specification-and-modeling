@@ -1,0 +1,22 @@
+/***********************************************************************
+ * Module:  EditVelicinaStranicaAction.java
+ * Author:  ra35-2015
+ * Purpose: Defines the Class EditVelicinaStranicaAction
+ ***********************************************************************/
+
+package etapa2.controller;
+
+import java.awt.event.ActionEvent;
+import java.util.*;
+
+import javax.swing.AbstractAction;
+
+/** @pdOid d4e040c2-276a-4804-ba8d-2dc3a6171b4d */
+public class EditVelicinaStranicaAction extends AbstractAction {
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+}

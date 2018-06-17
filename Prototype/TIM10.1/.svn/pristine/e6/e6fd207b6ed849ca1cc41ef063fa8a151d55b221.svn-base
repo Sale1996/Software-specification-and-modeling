@@ -1,0 +1,22 @@
+/***********************************************************************
+ * Module:  EditImeStranicaAction.java
+ * Author:  ra35-2015
+ * Purpose: Defines the Class EditImeStranicaAction
+ ***********************************************************************/
+
+package etapa2.controller;
+
+import java.awt.event.ActionEvent;
+import java.util.*;
+
+import javax.swing.AbstractAction;
+
+/** @pdOid 619ea9f9-1ab3-4a1a-aa3e-4efcc0a41362 */
+public class EditImeStranicaAction extends AbstractAction {
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+}

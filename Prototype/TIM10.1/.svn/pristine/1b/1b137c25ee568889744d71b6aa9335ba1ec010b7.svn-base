@@ -1,0 +1,24 @@
+/***********************************************************************
+ * Module:  EventBrojStranica.java
+ * Author:  SALE
+ * Purpose: Defines the Class EventBrojStranica
+ ***********************************************************************/
+
+package etapa2.model.events;
+
+import java.util.*;
+
+import etapa1.model.Dokument;
+import etapa1.model.events.EventNadDokumentom;
+
+/** @pdOid eb3ad1b3-015f-48c1-ac67-ae1706afa6c4 */
+public class EventBrojStranica extends EventNadDokumentom {
+   public EventBrojStranica(Dokument dokument) {
+		super(dokument);
+		// TODO Auto-generated constructor stub
+	}
+
+/** @pdOid 2cde1a72-082b-4298-a6f4-bfd1c4ce6c2f */
+   private int brojStrana;
+
+}

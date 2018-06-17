@@ -1,0 +1,175 @@
+/***********************************************************************
+ * Module:  DokumentView.java
+ * Author:  ra168-2015
+ * Purpose: Defines the Class DokumentView
+ ***********************************************************************/
+
+package etapa1.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+
+import javax.swing.JScrollPane;
+
+import etapa1.model.events.AbstractEvent;
+import etapa2.model.Stranica;
+import etapa2.model.events.EventAddStranica;
+import etapa2.model.events.EventEditIndexStranica;
+import etapa2.model.events.EventRemoveStranica;
+import etapa2.view.StranicaView;
+import etapa3.model.Slot;
+import etapa3.model.events.EventRemoveSlot;
+import etapa3.view.SlotView;
+
+/** @pdOid ff41a2da-bccb-4c9a-9447-dd7991e26833 */
+public class DokumentView extends JPanel implements Observer {
+	JPanel dokumentPanel;
+	String imePanelaDokumenta;
+	JLabel imeDokumenta;
+	ArrayList<StranicaView> stranice;
+
+	public DokumentView(DokumentView dokument) {
+		super();
+		this.dokumentPanel = dokument.getDokumentPanel();
+		this.imePanelaDokumenta = dokument.getImePanelaDokumenta();
+		this.imeDokumenta = dokument.getImeDokumenta();
+		this.stranice = dokument.getStranice();
+		this.add(dokumentPanel);
+		revalidate();	}
+
+	public DokumentView(String ime) {
+		// TODO Auto-generated constructor stub
+		this.setPreferredSize(new Dimension(400, 400));
+		this.setLayout(new BorderLayout());
+		dokumentPanel= new JPanel();
+		
+		Random random = new Random();
+		imePanelaDokumenta= ime;
+		
+		imeDokumenta= new JLabel("Ime: "+imePanelaDokumenta);
+		imeDokumenta.setFont(new Font("Serif", Font.PLAIN, 40));
+		dokumentPanel.add(imeDokumenta);
+		stranice = new ArrayList<StranicaView>();
+		
+		dokumentPanel.setBackground(new Color((int)(Math.random() * 0x1000000)));
+		BoxLayout boxCenter=new BoxLayout(dokumentPanel, BoxLayout.Y_AXIS);
+		dokumentPanel.setLayout(boxCenter);
+		this.add(new JScrollPane(dokumentPanel));
+		revalidate();
+		
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		AbstractEvent event = (AbstractEvent) arg1;
+		if(event instanceof EventAddStranica){
+			EventAddStranica event1 = (EventAddStranica) event;
+			Stranica stranica = event1.getStranica();
+			stranica.addObserver(this);//sada ovde oslskujemo stranicu
+			StranicaView stranicaView = new StranicaView(stranica.getNaziv() ,stranica.getRedniBrojIndeksa(), stranica.getDuzina(), stranica.getSirina(), stranica.getBrojSlotova(), stranica.getPraviloRasporedaSlotova());
+			stranica.addObserver(stranicaView);
+			stranicaView.setPreferredSize(new Dimension(stranica.getDuzina(), stranica.getSirina()));
+			stranicaView.setMinimumSize(stranicaView.getPreferredSize());
+			stranicaView.setMaximumSize(stranicaView.getPreferredSize());
+			GlavniProzor.getInstance().getStraniceView().add(stranicaView);
+			dokumentPanel.removeAll();
+
+			stranice.add(stranicaView);
+		    Collections.sort(stranice, new Comparator<StranicaView>() { //prolazi kroz listu stranica i redja ih po uzlaznom redosledu
+		        @Override public int compare(StranicaView p1, StranicaView p2) {
+		            return p1.getIndex() - p2.getIndex(); 
+		        }
+
+		    });
+		    for(int i=0; i<stranice.size(); i++) {
+		    	dokumentPanel.add(stranice.get(i));
+		    	dokumentPanel.add(Box.createVerticalStrut(10));
+		    }
+			revalidate();
+		}else if(event instanceof EventRemoveStranica) {
+			EventRemoveStranica event2 = (EventRemoveStranica) event;
+			Stranica stranica = event2.getStranica();
+			for(StranicaView item : GlavniProzor.getInstance().getStraniceView())
+				if(item.getIme().equals(stranica.getNaziv())) {
+					GlavniProzor.getInstance().getStraniceView().remove(item);
+					stranice.remove(item);
+					dokumentPanel.removeAll();
+				    Collections.sort(stranice, new Comparator<StranicaView>() { //prolazi kroz listu stranica i redja ih po uzlaznom redosledu
+				        @Override public int compare(StranicaView p1, StranicaView p2) {
+				            return p1.getIndex() - p2.getIndex(); 
+				        }
+
+				    });
+				    for(StranicaView item1 : stranice) {
+				    	dokumentPanel.add(item1);
+				    }
+					break;
+				}
+			revalidate();
+			
+		}else if(event instanceof EventEditIndexStranica){
+			EventEditIndexStranica event1 = (EventEditIndexStranica) event;
+			dokumentPanel.removeAll();
+
+		    Collections.sort(stranice, new Comparator<StranicaView>() { //prolazi kroz listu stranica i redja ih po uzlaznom redosledu
+		        @Override public int compare(StranicaView p1, StranicaView p2) {
+		            return p1.getIndex() - p2.getIndex();
+		        }
+
+		    });
+		    for(int i=0; i<stranice.size(); i++) {
+		    	dokumentPanel.add(stranice.get(i));
+		    	dokumentPanel.add(Box.createVerticalStrut(10));
+		    }
+			revalidate();
+		}
+	}
+
+	public String getImePanelaDokumenta() {
+		return imePanelaDokumenta;
+	}
+
+	public void setImePanelaDokumenta(String imePanelaDokumenta) {
+		this.imePanelaDokumenta = imePanelaDokumenta;
+	}
+
+	public JPanel getDokumentPanel() {
+		return dokumentPanel;
+	}
+
+	public void setDokumentPanel(JPanel dokumentPanel) {
+		this.dokumentPanel = dokumentPanel;
+	}
+
+	public JLabel getImeDokumenta() {
+		return imeDokumenta;
+	}
+
+	public void setImeDokumenta(JLabel imeDokumenta) {
+		this.imeDokumenta = imeDokumenta;
+	}
+
+	public ArrayList<StranicaView> getStranice() {
+		return stranice;
+	}
+
+	public void setStranice(ArrayList<StranicaView> stranice) {
+		this.stranice = stranice;
+	}
+}

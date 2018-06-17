@@ -1,0 +1,201 @@
+/***********************************************************************
+ * Module:  Dokument.java
+ * Author:  sale
+ * Purpose: Defines the Class Dokument
+ ***********************************************************************/
+
+package etapa1.model;
+
+import java.io.Serializable;
+
+import etapa1.model.events.EventEditImeDokument;
+import etapa1.model.events.EventEditImeRadniProstor;
+import etapa2.model.Stranica;
+import etapa2.model.events.EventAddStranica;
+import etapa2.model.events.EventRemoveStranica;
+
+/** @pdOid 25e45451-dfc8-4e40-ae61-0dca5427534b */
+public class Dokument extends Komponenta {
+   /** @pdOid 56152a6c-72b3-403d-aa27-76b62e59366e */
+   private Projekat maticniProjekat;
+  
+   
+   /** @pdRoleInfo migr=no name=Stranica assc=association7 coll=java.util.List impl=java.util.ArrayList mult=0..* type=Composition */
+   public java.util.List<Stranica> stranice;
+   /** @pdRoleInfo migr=no name=Projekat assc=association6 coll=java.util.List impl=java.util.ArrayList mult=0..* side=A */
+   public java.util.List<Projekat> deljenUProjektima;
+   
+   /** @param dokument
+    * @pdOid 7d5a2c58-e915-4d0e-a9e6-07043f0e4c61 */
+   public Dokument shareDokument(Dokument dokument) {
+      // TODO: implement
+      return null;
+   }
+   
+   /** @param dokument
+    * @pdOid d59ecc58-78cc-4e92-b7d9-1625a73e29d2 */
+   public Dokument detachDokument(Dokument dokument) {
+      // TODO: implement
+      return null;
+   }
+   
+   /** @param noviNaziv
+    * @pdOid 8e8ab66c-d990-4ddc-b1f0-024eff53331c */
+   public void promenaImena(String noviNaziv) {
+      // TODO: implement
+	   EventEditImeDokument event = new EventEditImeDokument(this,noviNaziv,this.naziv);
+	   this.naziv=noviNaziv;
+	   setChanged();
+	   notifyObservers(event);
+   }
+   
+   
+   /** @pdGenerated default getter */
+   public java.util.List<Stranica> getStranice() {
+      if (stranice == null)
+         stranice = new java.util.ArrayList<Stranica>();
+      return stranice;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorStranice() {
+      if (stranice == null)
+         stranice = new java.util.ArrayList<Stranica>();
+      return stranice.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newStranice */
+   public void setStranice(java.util.List<Stranica> newStranice) {
+      removeAllStranice();
+      for (java.util.Iterator iter = newStranice.iterator(); iter.hasNext();)
+         addStranice((Stranica)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newStranica */
+   public void addStranice(Stranica newStranica) {
+      if (newStranica == null)
+         return;
+      if (this.stranice == null)
+         this.stranice = new java.util.ArrayList<Stranica>();
+      if (!this.stranice.contains(newStranica))
+      {
+         this.stranice.add(newStranica);
+         if(newStranica.getMaticniDokument()==null) //u slucaju deljenja mi ne zelimo da diramo referencu na maticni dokument stranice!
+        	 newStranica.setMaticniDokument(this);
+         else
+        	 newStranica.addDeljenUDokumentima(this);
+         setChanged();
+         EventAddStranica event = new EventAddStranica(this,newStranica);
+         notifyObservers(event);
+         
+      }
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldStranica */
+   public void removeStranice(Stranica oldStranica) {
+      if (oldStranica == null)
+         return;
+      if (this.stranice != null)
+         if (this.stranice.contains(oldStranica))
+         {
+        	
+            this.stranice.remove(oldStranica);
+            if(oldStranica.getMaticniDokument() != this)
+            	oldStranica.removeDeljenUDokumentima(this);
+            setChanged();
+            EventRemoveStranica event = new EventRemoveStranica(oldStranica,this);
+            notifyObservers(event);
+
+         }
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllStranice() {
+      if (stranice != null)
+      {
+         Stranica oldStranica;
+         for (java.util.Iterator iter = getIteratorStranice(); iter.hasNext();)
+         {
+            oldStranica = (Stranica)iter.next();
+            iter.remove();
+            oldStranica.removeDeljenUDokumentima(this);
+         }
+      }
+   }
+   /** @pdGenerated default getter */
+   public java.util.List<Projekat> getDeljenUProjektima() {
+      if (deljenUProjektima == null)
+         deljenUProjektima = new java.util.ArrayList<Projekat>();
+      return deljenUProjektima;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorDeljenUProjektima() {
+      if (deljenUProjektima == null)
+         deljenUProjektima = new java.util.ArrayList<Projekat>();
+      return deljenUProjektima.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newDeljenUProjektima */
+   public void setDeljenUProjektima(java.util.List<Projekat> newDeljenUProjektima) {
+      removeAllDeljenUProjektima();
+      for (java.util.Iterator iter = newDeljenUProjektima.iterator(); iter.hasNext();)
+         addDeljenUProjektima((Projekat)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newProjekat */
+   public void addDeljenUProjektima(Projekat newProjekat) {
+      if (newProjekat == null)
+         return;
+      if (this.deljenUProjektima == null)
+         this.deljenUProjektima = new java.util.ArrayList<Projekat>();
+      if (!this.deljenUProjektima.contains(newProjekat))
+      {
+         this.deljenUProjektima.add(newProjekat);
+         newProjekat.addDokumenti(this);      
+      }
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldProjekat */
+   public void removeDeljenUProjektima(Projekat oldProjekat) {
+      if (oldProjekat == null)
+         return;
+      if (this.deljenUProjektima != null)
+         if (this.deljenUProjektima.contains(oldProjekat))
+         {
+            this.deljenUProjektima.remove(oldProjekat);
+            oldProjekat.removeDokumenti(this);
+         }
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllDeljenUProjektima() {
+      if (deljenUProjektima != null)
+      {
+         Projekat oldProjekat;
+         for (java.util.Iterator iter = getIteratorDeljenUProjektima(); iter.hasNext();)
+         {
+            oldProjekat = (Projekat)iter.next();
+            iter.remove();
+            oldProjekat.removeDokumenti(this);
+         }
+      }
+   }
+
+public Projekat getMaticniProjekat() {
+	return maticniProjekat;
+}
+
+public void setMaticniProjekat(Projekat maticniProjekat) {
+	this.maticniProjekat = maticniProjekat;
+}
+
+
+
+}

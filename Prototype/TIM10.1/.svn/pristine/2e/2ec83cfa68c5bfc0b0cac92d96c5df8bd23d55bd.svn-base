@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ant build script for building a Java application -->
+<!-- Author: sale -->
+<!-- Modified: 10. maj 2018 21:52:19 -->
+
+<!-- Targets description:                                               -->
+<!--    help:          Display help                                     -->
+<!--    all:           Build the entire application                     -->
+<!--    javadoc:       Generate Javadoc                                 -->
+<!--    clean:         Clean the generated files                        -->
+<!--    rebuild:       Rebuild the entire application                   -->
+
+<project name="GeRuDok Model Staticke Strukture" default="" basedir=".">
+
+   <!-- Standard build properties -->
+   <property name="srcdir"   value="${basedir}"/>
+   <property name="builddir" value="${basedir}/bin"/>
+   <property name="docdir"   value="${basedir}/docs/api"/>
+
+   <!-- Standard build tasks definition -->
+
+   <!-- Standard build targets -->
+   <target name="help" description="Display help">
+      <echo message="Targets description:"/>
+      <echo message="   help:          Display help"/>
+      <echo message="   all:           Build the entire application"/>
+      <echo message="   javadoc:       Generate Javadoc"/>
+      <echo message="   clean:         Clean the generated files"/>
+      <echo message="   rebuild:       Rebuild the entire application"/>
+   </target>
+   <target name="all" description="Build the entire application" depends="javadoc">
+      <echo message="Building the entire application..."/>
+   </target>
+   <target name="javadoc" description="Generate Javadoc">
+      <mkdir dir="${docdir}"/> 
+      <javadoc packagenames="model.*,view.*,controller.*,ostalo.*"
+               sourcepath="${srcdir}"
+               destdir="${docdir}"
+               classpath=""
+               defaultexcludes="yes"
+               author="true"
+               version="true"
+               use="true"
+               windowtitle="GeRuDokModelStatickeStrukture API">
+         <doctitle><![CDATA[<h1>GeRuDokModelStatickeStrukture</h1>]]></doctitle>
+      </javadoc>
+   </target>
+   <target name="clean" description="Clean the generated files">
+      <echo message="Cleaning the generated files..."/>
+      <delete failonerror="no">
+         <fileset dir="${builddir}" includes="**/*.class"/>
+         <fileset dir="${docdir}"/>
+      </delete>
+   </target>
+   <target name="rebuild" description="Rebuild the entire application" depends="clean, all">
+      <echo message="Rebuilding the entire application..."/>
+   </target>
+
+</project>

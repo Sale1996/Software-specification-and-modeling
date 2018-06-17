@@ -1,0 +1,15 @@
+/***********************************************************************
+ * Module:  AbstractElement.java
+ * Author:  Leonidas
+ * Purpose: Defines the Class AbstractElement
+ ***********************************************************************/
+
+package etapa3.model;
+
+import java.util.*;
+
+/** @pdOid 98a4f435-54b0-4a33-92a3-77cf0046a5df */
+public abstract class AbstractElement extends Observable {
+	   /** @pdRoleInfo migr=no name=Slot assc=association3 mult=1..1 side=A */
+	   public Slot slot;
+}
